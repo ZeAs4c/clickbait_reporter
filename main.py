@@ -4,31 +4,25 @@ import sys
 from cli import parse_args
 from reporters import get_reporter
 from utils import read_csv_files
+from tabulate import tabulate
 
 
 def main():
-    """Главная функция приложения."""
+    """Основной pipeline:
+    CLI → чтение данных → выбор отчёта → генерация → вывод"""
     try:
 
-        # 1. Парсим аргументы
         args = parse_args()
-
-        # 2. Читаем все CSV файлы
         videos = read_csv_files(args.files)
 
         if not videos:
             print("Предупреждение: не найдено валидных видео в файлах")
             return
 
-        # 3. Получаем нужный репортер
         reporter = get_reporter(args.report)
-
-        # 4. Генерируем отчёт
         report_data = reporter.generate(videos)
 
-        # 5. Выводим таблицу
         if report_data:
-            from tabulate import tabulate
             table = tabulate(
                 report_data,
                 headers={

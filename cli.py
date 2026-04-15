@@ -18,7 +18,7 @@ def parse_args(args: List[str] = None):
 
     parser.add_argument(
         "--files",
-        nargs="+",  # принимает один или несколько файлов
+        nargs="+",
         required=True,
         help="Пути к CSV-файлам с данными (можно указать несколько)"
     )

@@ -1,12 +1,13 @@
 """Регистрация всех доступных отчётов."""
 from typing import Dict, Type
+from reporters.base import BaseReporter
 
 from reporters.clickbait import ClickbaitReporter
 
 
 # Словарь доступных отчётов: имя -> класс
-REPORTERS: Dict[str, Type] = {
-    ClickbaitReporter().name: ClickbaitReporter,
+REPORTERS: Dict[str, Type[BaseReporter]] = {
+    ClickbaitReporter.name: ClickbaitReporter,
 }
 
 

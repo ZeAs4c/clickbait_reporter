@@ -1,5 +1,7 @@
 """Утилиты для чтения файлов."""
 import csv
+import logging
+
 from pathlib import Path
 from typing import List
 
@@ -21,7 +23,8 @@ def read_csv_files(file_paths: List[str]) -> List[Video]:
             raise FileNotFoundError(f"Файл не найден: {file_path}")
         with open(path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
-            # Проверяем, что нужные колонки есть
+
+            # Проверяем наличие обязательных колонок для расчёта отчётов
             required_columns = {'title', 'ctr', 'retention_rate'}
             if not required_columns.issubset(reader.fieldnames):
                 raise ValueError(
@@ -33,8 +36,9 @@ def read_csv_files(file_paths: List[str]) -> List[Video]:
                     video = Video.from_csv_row(row)
                     videos.append(video)
                 except (ValueError, KeyError) as e:
-                    # Пропускаем битые строки, но сообщаем
+                    # Пропускаем строки с некорректными данными
+                    # (например, невалидные числа)
                     msg = f"Ошибка в строке {file_path}: {e}"
-                    print(msg)
+                    logging.warning(msg)
                     continue
     return videos

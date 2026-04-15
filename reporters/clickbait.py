@@ -1,20 +1,17 @@
 """Отчёт для кликбейтных видео."""
 from typing import List, Dict, Any
-
 from models import Video
+from reporters.base import BaseReporter
 
 
-class ClickbaitReporter:
+class ClickbaitReporter(BaseReporter):
 
     """
     Формирует отчёт о кликбейтных видео.
     Условия: ctr > 15 И retention_rate < 40
     Сортировка: по убыванию CTR
     """
-    @property
-    def name(self) -> str:
-        """Название отчёта (совпадает с параметром --report)."""
-        return "clickbait"
+    name = "clickbait"
 
     def generate(self, videos: List[Video]) -> List[Dict[str, Any]]:
         """
@@ -24,16 +21,16 @@ class ClickbaitReporter:
         Returns:
             Список словарей с полями title, ctr, retention_rate
         """
-        # Фильтрация
+        # Условие кликбейта: высокий CTR и низкое удержание
         filtered = [
             video for video in videos
             if video.ctr > 15 and video.retention_rate < 40
         ]
 
-        # Сортировка по убыванию CTR
+        # Сортируем, чтобы самые кликбейтные (с высоким CTR) были сверху
         filtered.sort(key=lambda v: v.ctr, reverse=True)
 
-        # Преобразование в формат для таблицы
+        # Приводим к формату, подходящему для tabulate (список словарей)
         return [
             {
                 "title": v.title,
